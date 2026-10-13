@@ -2538,6 +2538,15 @@ impl AppModel {
                     pane.update(cx, |pane, cx| pane.metadata(event, cx));
                 }
             }
+            ClientEvent::ClipboardWrite { channel, write } => {
+                if let Some(pane) = self.attached_view(server, channel, cx)
+                    && let Some(text) = write.take()
+                {
+                    pane.update(cx, |pane, cx| {
+                        pane.metadata(muxy_protocol::MetadataEvent::ClipboardWrite(text), cx);
+                    });
+                }
+            }
         }
     }
 
